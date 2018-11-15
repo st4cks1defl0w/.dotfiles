@@ -1,0 +1,32 @@
+[/]
+new-window-inherit-state=true
+use-overlay-scrollbar=false
+terminal-title-style='none'
+theme-variant='dark'
+focus-follow-mouse=true
+terminal-title-show-when-single=false
+window-style='borderless'
+
+[profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d]
+dim-transparency-percent=0
+foreground-color='#7878C3C3D3D3'
+visible-name='Default'
+palette=['#252525', '#FF5252', '#7878C4C4D3D3', '#FFC135', '#7878C3C3D3D3', '#D81B60', '#00ACC1', '#F5F5F5', '#708284', '#FF5252', '#7878C3C3D3D3', '#FFC135', '#7878C3C3D3D3', '#D81B60', '#00ACC1', '#F5F5F5']
+bold-is-bright=false
+badge-color='#AC7EA8'
+badge-color-set=false
+show-scrollbar=false
+use-system-font=false
+cursor-colors-set=false
+highlight-colors-set=false
+use-theme-colors=false
+bold-color-set=false
+font='Hack 11'
+bold-color='#72729F9FCFCF'
+background-color='#28282A2A2E2E'
+background-transparency-percent=17
+badge-text=''
+
+[keybindings]
+session-add-right='<Super>r'
+terminal-reset-and-clear='<Primary><Shift>r'
