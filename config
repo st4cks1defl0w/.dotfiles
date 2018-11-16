@@ -30,7 +30,7 @@ font pango:monospace 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec tilix 
+bindsym $mod+Return exec tilix
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -43,7 +43,7 @@ bindsym $mod+Shift+q kill
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
-bindsym $mod+l focus up
+#bindsym $mod+l focus up
 bindsym $mod+semicolon focus right
 
 # alternatively, you can use the cursor keys:
@@ -80,9 +80,6 @@ bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
-
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -134,6 +131,9 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
+# lock i3
+bindsym $mod+l exec "i3lock-fancy"
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
@@ -183,23 +183,25 @@ bar {
         separator   #81a2be
         # class             border  backgr. text
         focused_workspace   #78c3d3 #78c3d3  #282a2e
-        active_workspace    #282a2e #282a2e #78c3d3  
-        inactive_workspace  #282a2e #282a2e #78c3d3  
-        urgent_workspace    #282a2e #d64e4e #78c3d3  
+        active_workspace    #282a2e #282a2e #78c3d3
+        inactive_workspace  #282a2e #282a2e #78c3d3
+        urgent_workspace    #282a2e #d64e4e #78c3d3
     }
 }
 
 #new_window 0pixel
-bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#f4800d' -nf '#F4800d' 
+bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#f4800d' -nf '#F4800d'
 default_border pixel 0
 
 # i3-gaps
 smart_gaps on
-gaps inner 20
-gaps outer 20
+gaps inner 30
+gaps outer 30
 
-exec --no-startup-id feh --bg-fill ~/Pictures/pape.jpg 
+exec --no-startup-id feh --bg-fill ~/Pictures/pape.jpg
 exec --no-startup-id compton --config ~/.config/compton/compton.conf
 exec --no-startup-id tilix
-exec --no-startup-id emacs 
-
+exec --no-startup-id emacs
+exec "setxkbmap -layout us,ru"
+exec "setxkbmap -option 'grp:caps_toggle'"
+exec --no-startup-id i3-msg 'workspace 1:Web; exec slack'
