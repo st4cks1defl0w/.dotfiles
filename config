@@ -202,5 +202,6 @@ exec --no-startup-id feh --bg-fill ~/Pictures/pape.jpg
 exec --no-startup-id compton --config ~/.config/compton/compton.conf
 exec --no-startup-id tilix
 exec --no-startup-id emacs
+exec xinput set-prop 11 285 1
 exec "setxkbmap -layout us,ru"
 exec "setxkbmap -option 'grp:caps_toggle'"
