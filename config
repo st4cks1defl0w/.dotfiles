@@ -173,7 +173,6 @@ client.background       #282a2e
 bar {
     position                top
     tray_output             primary
-    separator_symbol        "·"
     workspace_buttons       yes
     strip_workspace_numbers yes
 
@@ -187,6 +186,7 @@ bar {
         inactive_workspace  #282a2e #282a2e #78c3d3
         urgent_workspace    #282a2e #d64e4e #78c3d3
     }
+status_command i3status -c ~/.config/i3/statusconfig
 }
 
 #new_window 0pixel
@@ -195,8 +195,8 @@ default_border pixel 0
 
 # i3-gaps
 smart_gaps on
-gaps inner 30
-gaps outer 30
+gaps inner 20
+gaps outer 20
 
 exec --no-startup-id feh --bg-fill ~/Pictures/pape.jpg
 exec --no-startup-id compton --config ~/.config/compton/compton.conf
@@ -204,4 +204,3 @@ exec --no-startup-id tilix
 exec --no-startup-id emacs
 exec "setxkbmap -layout us,ru"
 exec "setxkbmap -option 'grp:caps_toggle'"
-exec --no-startup-id i3-msg 'workspace 1:Web; exec slack'
