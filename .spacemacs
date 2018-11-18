@@ -10,7 +10,34 @@ This function should only modify configuration layer settings."
    ;; `+distribution'. For now available distributions are `spacemacs-base'
    ;; or `spacemacs'. (default 'spacemacs)
    dotspacemacs-distribution 'spacemacs
-
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (elisp-format flycheck-elm treemacs-projectile treemacs-evil treemacs ht pfuture zenburn-theme zen-and-art-theme yasnippet-snippets yaml-mode ws-butler winum white-sand-theme which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit symon sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection sql-indent spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode rjsx-mode reverse-theme restart-emacs rebecca-theme rainbow-delimiters railscasts-theme purple-haze-theme pug-mode professional-theme prettier-js popwin planet-theme phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el password-generator paradox overseer orgit organic-green-theme org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme neotree naquadah-theme nameless mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minimal-theme material-theme markdown-toc majapahit-theme magit-svn magit-gitflow madhat2r-theme macrostep lush-theme lorem-ipsum livid-mode linum-relative link-hint light-soap-theme less-css-mode kaolin-themes json-navigator js2-refactor js-doc jbeans-theme jazz-theme ir-black-theme insert-shebang inkpot-theme indent-guide impatient-mode ibuffer-projectile hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md gandalf-theme fuzzy font-lock+ flycheck-pos-tip flycheck-joker flycheck-bashate flx-ido flatui-theme flatland-theme fish-mode fill-column-indicator farmhouse-theme fancy-battery eziam-theme eyebrowse expand-region exotica-theme evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu espresso-theme emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode dracula-theme dotenv-mode doom-themes doom-modeline dockerfile-mode docker django-theme diminish define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme counsel-projectile copy-as-format company-web company-tern company-statistics company-shell company-quickhelp company-php company-go column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode cider-eval-sexp-fu cherry-blossom-theme centered-cursor-mode busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme all-the-icons-ivy alect-themes aggressive-indent afternoon-theme ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(safe-local-variable-values
+   (quote
+    ((cider-default-cljs-repl . figwheel)
+     (helm-ag-use-agignore t)
+     (cljr-libspec-whitelist "^cljs.core.specs.alpha" "^cljs-time.extend" "^cljs-time.instant" "^cljsjs.moment.locale.ru" "^googlecloud.cloudstorage.storage" "^day8.re-frame.async-flow-fx" "^day8.re-frame.http-fx" "^transportal.events" "^transportal.interval" "^transportal.intro")
+     (cljr-after-warming-ast-cache-hook lambda
+                                        (&rest ignore)
+                                        (interactive)
+                                        (cider-interactive-eval "(dev/reset)"))
+     (javascript-backend . tern)
+     (javascript-backend . lsp)
+     (go-backend . go-mode)
+     (go-backend . lsp)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
    ;; Lazy installation of layers (i.e. layers are installed only when a file
    ;; with a supported type is opened). Possible values are `all', `unused'
    ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
@@ -527,8 +554,54 @@ before packages are loaded."
         (plist-put :port port)
         (cider-connect))))
 
+  (defun strip-functions (str)
+    (replace-regexp-in-string "([^.]*)\\|(.*)" "arg"
+                              str))
+
+
+  (defun strip-destructuring (str)
+    (replace-regexp-in-string "{:keys \\[\\|\\]}"
+                              ""
+                              str))
+  (defun remove-odd (list)
+    (loop for i in list
+          for idx from 0
+          unless (oddp idx)
+          collect i))
+
+
+  (defun arg->arg-and-label (arg)
+    (concat "\n\"___" arg " \"" " " arg))
+
+
+  (defun str-vector->labeled-args (str-vector sexp-type)
+    (setq-local after-functions (strip-functions str-vector))
+    (setq-local after-destr (strip-destructuring after-functions))
+    (setq-local vector-trimmed
+     (split-string
+      (substring after-destr 1 -1)))
+    (let ((arg-list (if (string= sexp-type "def")
+                       vector-trimmed
+                     (remove-odd vector-trimmed))))
+    (concat "(println \"***args are \" " (mapconcat 'arg->arg-and-label
+                                                    arg-list " ") ")\n")))
+
+
+  (defun arg-side-debug (&optional n)
+    (interactive "P")
+    (setq-local insert-at (point))
+    (sp-beginning-of-sexp)
+    (setq-local sexp-type (evil-yank-characters (point) (+ 3 (point))))
+    (down-list)
+    (sp-backward-up-sexp)
+    (let* ((args (evil-cp-yank-sexp 1)))
+      (goto-char insert-at)
+      (insert-string (str-vector->labeled-args
+                      args sexp-type))))
+
   (dolist (m '(clojure-mode))
     (spacemacs/set-leader-keys-for-major-mode m
+      "a" 'arg-side-debug
       "j" 'cider-project-reset
       "J" 'cider-dev
       "sj" 'cider-connect-sibling-cljs
@@ -569,31 +642,3 @@ before packages are loaded."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (flycheck-elm treemacs-projectile treemacs-evil treemacs ht pfuture zenburn-theme zen-and-art-theme yasnippet-snippets yaml-mode ws-butler winum white-sand-theme which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme tagedit symon sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection sql-indent spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode rjsx-mode reverse-theme restart-emacs rebecca-theme rainbow-delimiters railscasts-theme purple-haze-theme pug-mode professional-theme prettier-js popwin planet-theme phpunit phpcbf php-extras php-auto-yasnippets phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el password-generator paradox overseer orgit organic-green-theme org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme neotree naquadah-theme nameless mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode minimal-theme material-theme markdown-toc majapahit-theme magit-svn magit-gitflow madhat2r-theme macrostep lush-theme lorem-ipsum livid-mode linum-relative link-hint light-soap-theme less-css-mode kaolin-themes json-navigator js2-refactor js-doc jbeans-theme jazz-theme ir-black-theme insert-shebang inkpot-theme indent-guide impatient-mode ibuffer-projectile hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md gandalf-theme fuzzy font-lock+ flycheck-pos-tip flycheck-joker flycheck-bashate flx-ido flatui-theme flatland-theme fish-mode fill-column-indicator farmhouse-theme fancy-battery eziam-theme eyebrowse expand-region exotica-theme evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu espresso-theme emmet-mode elisp-slime-nav editorconfig dumb-jump drupal-mode dracula-theme dotenv-mode doom-themes doom-modeline dockerfile-mode docker django-theme diminish define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme counsel-projectile copy-as-format company-web company-tern company-statistics company-shell company-quickhelp company-php company-go column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode cider-eval-sexp-fu cherry-blossom-theme centered-cursor-mode busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme all-the-icons-ivy alect-themes aggressive-indent afternoon-theme ace-window ace-link ace-jump-helm-line ac-ispell)))
- '(safe-local-variable-values
-   (quote
-    ((cider-default-cljs-repl . figwheel)
-     (helm-ag-use-agignore t)
-     (cljr-libspec-whitelist "^cljs.core.specs.alpha" "^cljs-time.extend" "^cljs-time.instant" "^cljsjs.moment.locale.ru" "^googlecloud.cloudstorage.storage" "^day8.re-frame.async-flow-fx" "^day8.re-frame.http-fx" "^transportal.events" "^transportal.interval" "^transportal.intro")
-     (cljr-after-warming-ast-cache-hook lambda
-                                        (&rest ignore)
-                                        (interactive)
-                                        (cider-interactive-eval "(dev/reset)"))
-     (javascript-backend . tern)
-     (javascript-backend . lsp)
-     (go-backend . go-mode)
-     (go-backend . lsp)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
