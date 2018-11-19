@@ -530,8 +530,8 @@ before packages are loaded."
     (setq-local defunced (replace-regexp-in-string fn-pattern ":arg-side-args-emacs" str))
     (setq-local saved-match (string-match vector-pattern defunced))
     (setq-local saved-match-str (match-string 0 defunced))
-    (message saved-match-str)
-    (if saved-match-str
+    (message "lol")
+    (if (null saved-match-str)
       (substring saved-match-str 1 -1)
       ""))
 
@@ -552,6 +552,7 @@ before packages are loaded."
         (concat "\n\"___" arg " \"" " " arg)))
 
   (defun str-vector->labeled-args (str-vector sexp-type)
+(message sexp-type)
     (setq-local trimmed-vector (substring str-vector 1 -1))
     (setq-local flattened-arguments (split-string (strip-forms trimmed-vector)))
     (setq-local flattened-destructured-arguments (split-string (extract-destructured-args trimmed-vector)))
