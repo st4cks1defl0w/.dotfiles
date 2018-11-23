@@ -200,8 +200,8 @@ gaps outer 20
 
 exec --no-startup-id feh --bg-fill ~/Pictures/pape.jpg
 exec --no-startup-id compton --config ~/.config/compton/compton.conf
-exec --no-startup-id tilix
 exec --no-startup-id emacs
+exec --no-startup-id tilix -x vim TODO
 exec "xinput set-prop 11 285 1"
 exec "xinput set-prop 12 285 1"
 exec "setxkbmap -layout us,ru"
