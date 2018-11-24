@@ -579,10 +579,21 @@ before packages are loaded."
 (defun debug-spit-symbol (&optional n)
   (interactive "P")
   (let* ((yanked (evil-paste-before 0)))
-  (insert-string (concat "\n(println \">>>>spitting data "
+  (insert-string (concat "\n(println \">>> "
                          yanked ":\" "
                          yanked ")\n"))))
 
+
+(defun chase-usages (&optional n)
+  (interactive "P")
+  (let* ((starting-point (point))
+         (yanked-sexp (evil-cp-yank-sexp 1)))
+    (evil-goto-first-line)
+    (evil-forward-WORD-begin)
+    (setq yanked-ns (string-remove-prefix "transportal." (evil-cp-yank-sexp 1)))
+    (goto-char starting-point)
+    (insert-string
+     (helm-do-ag (projectile-project-root) nil (concat "[^\.]" yanked-ns "/" yanked-sexp " ")))))
 
   (dolist (m '(clojure-mode))
     (spacemacs/set-leader-keys-for-major-mode m
@@ -595,6 +606,8 @@ before packages are loaded."
 
   (dolist (m '(clojure-mode clojurescript-mode))
     (spacemacs/set-leader-keys-for-major-mode m
+      "cu" 'chase-usages
+      "ct" 'chasing-test
       "da" 'arg-side-debug
       "ds" 'debug-spit-symbol
       "gk" 'cider-find-keyword))
