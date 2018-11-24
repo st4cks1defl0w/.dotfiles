@@ -545,7 +545,7 @@ before packages are loaded."
 ;;todo place destrctured args into their correct positions
   (defun arg->arg-and-label (arg)
     (when (not (string= ":arg-side-args-emacs" arg))
-        (concat "\n\"___" arg " \"" " " arg)))
+        (concat "\n\">>>" arg " \"" " " arg)))
 
   (defun str-vector->labeled-args (str-vector sexp-type)
 (message sexp-type)
@@ -555,13 +555,13 @@ before packages are loaded."
     (let ((arg-list (if (string= sexp-type "def")
                      flattened-arguments
                      (remove-odd flattened-arguments))))
-    (concat "(println \"***args are \" " (mapconcat 'arg->arg-and-label
+    (concat "(println \">>>args are \" " (mapconcat 'arg->arg-and-label
                                                     (append
                                                      arg-list
                                                      flattened-destructured-arguments) " ") ")\n")))
 
 
-  (defun arg-side-debug (&optional n)
+  (defun chase-args (&optional n)
     (interactive "P")
     (setq-local insert-at (point))
     (sp-beginning-of-sexp)
@@ -573,109 +573,109 @@ before packages are loaded."
       (insert-string (str-vector->labeled-args
                       args sexp-type))))
 
-(defun debug-spit-symbol (&optional n)
+(defun chase-print-symbol (&optional n)
   (interactive "P")
   (let* ((yanked (evil-paste-before 0)))
   (insert-string (concat "\n(println \">>> "
                          yanked ":\" "
                          yanked ")\n"))))
 
-;;;;START HELM-AG.EL - A HACK TO PASS CUSTOM AG INPUT
+;; ;;;;START HELM-AG.EL - A HACK TO PASS CUSTOM AG INPUT
 
-(defun helm-do-ag--helm (&optional custom-input)
-  (let ((search-dir (if (not (helm-ag--windows-p))
-                        helm-ag--default-directory
-                      (if (helm-do-ag--target-one-directory-p helm-ag--default-target)
-                          (car helm-ag--default-target)
-                        helm-ag--default-directory))))
-    (helm-attrset 'name (helm-ag--helm-header search-dir)
-                  helm-source-do-ag)
-    (helm :sources '(helm-source-do-ag) :buffer "*helm-ag*" :keymap helm-do-ag-map
-          :input (or  custom-input
-                      (helm-ag--marked-input t)
-                     (helm-ag--insert-thing-at-point helm-ag-insert-at-point))
-          :history 'helm-ag--helm-history)))
+;; (defun helm-do-ag--helm (&optional custom-input)
+;;   (let ((search-dir (if (not (helm-ag--windows-p))
+;;                         helm-ag--default-directory
+;;                       (if (helm-do-ag--target-one-directory-p helm-ag--default-target)
+;;                           (car helm-ag--default-target)
+;;                         helm-ag--default-directory))))
+;;     (helm-attrset 'name (helm-ag--helm-header search-dir)
+;;                   helm-source-do-ag)
+;;     (helm :sources '(helm-source-do-ag) :buffer "*helm-ag*" :keymap helm-do-ag-map
+;;           :input (or  custom-input
+;;                       (helm-ag--marked-input t)
+;;                      (helm-ag--insert-thing-at-point helm-ag-insert-at-point))
+;;           :history 'helm-ag--helm-history)))
 
-;;;###autoload
-(defun helm-do-ag-this-file ()
-  (interactive)
-  (helm-aif (buffer-file-name)
-      (helm-do-ag default-directory (list it))
-    (error "Error: This buffer is not visited file.")))
+;; ;;;###autoload
+;; (defun helm-do-ag-this-file ()
+;;   (interactive)
+;;   (helm-aif (buffer-file-name)
+;;       (helm-do-ag default-directory (list it))
+;;     (error "Error: This buffer is not visited file.")))
 
-;;;###autoload
-(defun helm-do-ag (&optional basedir targets custom-input)
-  (interactive)
-  (require 'helm-mode)
-  (helm-ag--init-state)
-  (let* ((helm-ag--default-directory (or basedir default-directory))
-         (helm-ag--default-target (cond (targets targets)
-                                        ((and (helm-ag--windows-p) basedir) (list basedir))
-                                        (t
-                                         (when (and (not basedir) (not helm-ag--buffer-search))
-                                           (helm-read-file-name
-                                            "Search in file(s): "
-                                            :default default-directory
-                                            :marked-candidates t :must-match t)))))
-         (helm-do-ag--extensions (when helm-ag--default-target
-                                   (helm-ag--do-ag-searched-extensions)))
-         (one-directory-p (helm-do-ag--target-one-directory-p
-                           helm-ag--default-target)))
-    (helm-ag--set-do-ag-option)
-    (helm-ag--set-command-features)
-    (helm-ag--save-current-context)
-    (helm-attrset 'search-this-file
-                  (and (= (length helm-ag--default-target) 1)
-                       (not (file-directory-p (car helm-ag--default-target)))
-                       (car helm-ag--default-target))
-                  helm-source-do-ag)
-    (if (or (helm-ag--windows-p) (not one-directory-p)) ;; Path argument must be specified on Windows
-        (helm-do-ag--helm custom-input)
-      (let* ((helm-ag--default-directory
-              (file-name-as-directory (car helm-ag--default-target)))
-             (helm-ag--default-target nil))
-        (helm-do-ag--helm custom-input)))))
+;; ;;;###autoload
+;; (defun helm-do-ag (&optional basedir targets custom-input)
+;;   (interactive)
+;;   (require 'helm-mode)
+;;   (helm-ag--init-state)
+;;   (let* ((helm-ag--default-directory (or basedir default-directory))
+;;          (helm-ag--default-target (cond (targets targets)
+;;                                         ((and (helm-ag--windows-p) basedir) (list basedir))
+;;                                         (t
+;;                                          (when (and (not basedir) (not helm-ag--buffer-search))
+;;                                            (helm-read-file-name
+;;                                             "Search in file(s): "
+;;                                             :default default-directory
+;;                                             :marked-candidates t :must-match t)))))
+;;          (helm-do-ag--extensions (when helm-ag--default-target
+;;                                    (helm-ag--do-ag-searched-extensions)))
+;;          (one-directory-p (helm-do-ag--target-one-directory-p
+;;                            helm-ag--default-target)))
+;;     (helm-ag--set-do-ag-option)
+;;     (helm-ag--set-command-features)
+;;     (helm-ag--save-current-context)
+;;     (helm-attrset 'search-this-file
+;;                   (and (= (length helm-ag--default-target) 1)
+;;                        (not (file-directory-p (car helm-ag--default-target)))
+;;                        (car helm-ag--default-target))
+;;                   helm-source-do-ag)
+;;     (if (or (helm-ag--windows-p) (not one-directory-p)) ;; Path argument must be specified on Windows
+;;         (helm-do-ag--helm custom-input)
+;;       (let* ((helm-ag--default-directory
+;;               (file-name-as-directory (car helm-ag--default-target)))
+;;              (helm-ag--default-target nil))
+;;         (helm-do-ag--helm custom-input)))))
 
-(defun helm-ag--project-root ()
-  (cl-loop for dir in '(".git/" ".hg/" ".svn/" ".git")
-           when (locate-dominating-file default-directory dir)
-           return it))
+;; (defun helm-ag--project-root ()
+;;   (cl-loop for dir in '(".git/" ".hg/" ".svn/" ".git")
+;;            when (locate-dominating-file default-directory dir)
+;;            return it))
 
 
-;;;###autoload
-(defun helm-do-ag (&optional basedir targets custom-input)
-  (interactive)
-  (require 'helm-mode)
-  (helm-ag--init-state)
-  (let* ((helm-ag--default-directory (or basedir default-directory))
-         (helm-ag--default-target (cond (targets targets)
-                                        ((and (helm-ag--windows-p) basedir) (list basedir))
-                                        (t
-                                         (when (and (not basedir) (not helm-ag--buffer-search))
-                                           (helm-read-file-name
-                                            "Search in file(s): "
-                                            :default default-directory
-                                            :marked-candidates t :must-match t)))))
-         (helm-do-ag--extensions (when helm-ag--default-target
-                                   (helm-ag--do-ag-searched-extensions)))
-         (one-directory-p (helm-do-ag--target-one-directory-p
-                           helm-ag--default-target)))
-    (helm-ag--set-do-ag-option)
-    (helm-ag--set-command-features)
-    (helm-ag--save-current-context)
-    (helm-attrset 'search-this-file
-                  (and (= (length helm-ag--default-target) 1)
-                       (not (file-directory-p (car helm-ag--default-target)))
-                       (car helm-ag--default-target))
-                  helm-source-do-ag)
-    (if (or (helm-ag--windows-p) (not one-directory-p)) ;; Path argument must be specified on Windows
-        (helm-do-ag--helm custom-input)
-      (let* ((helm-ag--default-directory
-              (file-name-as-directory (car helm-ag--default-target)))
-             (helm-ag--default-target nil))
-        (helm-do-ag--helm custom-input)))))
+;; ;;;###autoload
+;; (defun helm-do-ag (&optional basedir targets custom-input)
+;;   (interactive)
+;;   (require 'helm-mode)
+;;   (helm-ag--init-state)
+;;   (let* ((helm-ag--default-directory (or basedir default-directory))
+;;          (helm-ag--default-target (cond (targets targets)
+;;                                         ((and (helm-ag--windows-p) basedir) (list basedir))
+;;                                         (t
+;;                                          (when (and (not basedir) (not helm-ag--buffer-search))
+;;                                            (helm-read-file-name
+;;                                             "Search in file(s): "
+;;                                             :default default-directory
+;;                                             :marked-candidates t :must-match t)))))
+;;          (helm-do-ag--extensions (when helm-ag--default-target
+;;                                    (helm-ag--do-ag-searched-extensions)))
+;;          (one-directory-p (helm-do-ag--target-one-directory-p
+;;                            helm-ag--default-target)))
+;;     (helm-ag--set-do-ag-option)
+;;     (helm-ag--set-command-features)
+;;     (helm-ag--save-current-context)
+;;     (helm-attrset 'search-this-file
+;;                   (and (= (length helm-ag--default-target) 1)
+;;                        (not (file-directory-p (car helm-ag--default-target)))
+;;                        (car helm-ag--default-target))
+;;                   helm-source-do-ag)
+;;     (if (or (helm-ag--windows-p) (not one-directory-p)) ;; Path argument must be specified on Windows
+;;         (helm-do-ag--helm custom-input)
+;;       (let* ((helm-ag--default-directory
+;;               (file-name-as-directory (car helm-ag--default-target)))
+;;              (helm-ag--default-target nil))
+;;         (helm-do-ag--helm custom-input)))))
 
-;;;;END HELM-AG.EL;;;;
+;; ;;;;END HELM-AG.EL;;;;
 
 
 (defun chase-usages (&optional n)
@@ -684,7 +684,8 @@ before packages are loaded."
          (yanked-sexp (evil-cp-yank-sexp 1)))
     (evil-goto-first-line)
     (evil-forward-WORD-begin)
-    (setq yanked-ns (string-remove-prefix "transportal." (evil-cp-yank-sexp 1)))
+    (setq yanked-ns (string-remove-suffix ".core"
+                                          (string-remove-prefix "transportal." (evil-cp-yank-sexp 1))))
     (goto-char starting-point)
     (insert-string
      (helm-do-ag (projectile-project-root) nil (concat "[^\.]" yanked-ns "/" yanked-sexp " ")))))
@@ -701,9 +702,8 @@ before packages are loaded."
   (dolist (m '(clojure-mode clojurescript-mode))
     (spacemacs/set-leader-keys-for-major-mode m
       "cu" 'chase-usages
-      "ct" 'chasing-test
-      "da" 'arg-side-debug
-      "ds" 'debug-spit-symbol
+      "ca" 'chase-args
+      "cs" 'chase-print-symbol
       "gk" 'cider-find-keyword))
 
   (setq-default
