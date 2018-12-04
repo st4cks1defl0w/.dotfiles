@@ -204,6 +204,6 @@ exec --no-startup-id compton --config ~/.config/compton/compton.conf
 exec --no-startup-id emacs
 exec --no-startup-id tilix -x vim TODO
 exec "xinput set-prop 11 286 1"
-libinput-gestures-setup start
+exec "libinput-gestures-setup start"
 #exec "setxkbmap -layout us,ru"
 #exec "setxkbmap -option 'grp:caps_toggle'"
