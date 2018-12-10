@@ -205,5 +205,6 @@ exec --no-startup-id emacs
 exec --no-startup-id tilix -x vim TODO
 exec "xinput set-prop 11 286 1"
 exec "libinput-gestures-setup start"
+exec --no-startup-id redshift || redshift -l 43.72:87.33
 #exec "setxkbmap -layout us,ru"
 #exec "setxkbmap -option 'grp:caps_toggle'"
