@@ -202,9 +202,80 @@ gaps outer 20
 exec --no-startup-id feh --bg-fill ~/Pictures/pape.jpg
 exec --no-startup-id compton --config ~/.config/compton/compton.conf
 exec --no-startup-id emacs
-exec --no-startup-id tilix -x vim TODO
 exec "xinput set-prop 11 286 1"
 exec "libinput-gestures-setup start"
-exec --no-startup-id redshift || redshift -l 43.72:87.33
 #exec "setxkbmap -layout us,ru"
 #exec "setxkbmap -option 'grp:caps_toggle'"
+
+# Scratchpad
+exec --no-startup-id tilix --quake -e vim todo
+bindsym $mod+b exec tilix --quake
+bindsym $mod+Shift+b exec i3-msg 'fullscreen toggle' && tilix --quake && i3-msg 'fullscreen toggle'
+
+# Bluetooth
+exec blueman-applet
+# Email
+exec thunderbird
+# Screenshot
+bindsym --release $mod+z exec scrot -u -q 100
+
+# Thinkpad-specific stuff 
+
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+
+# Media player controls
+bindsym XF86AudioPlay exec playerctl play
+bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+#new_window 0pixel
+bindsym $mod+d exec dmenu_run -nb '#1e1e1e' -sf '#1e1e1e' -sb '#f4800d' -nf '#F4800d'
+default_border pixel 0
+
+# i3-gaps
+smart_gaps on
+gaps inner 20
+gaps outer 20
+
+# nice bindings with named workspaces :*)
+
+# switch to workspace
+bindsym $mod+1 workspace number 1 1:emacs
+bindsym $mod+2 workspace number 2 2:chromi
+bindsym $mod+3 workspace number 3 3:term
+bindsym $mod+4 workspace number 4 4:nau+pdf
+bindsym $mod+5 workspace number 5 5:email
+bindsym $mod+6 workspace number 6 6:ff
+bindsym $mod+7 workspace number 7 7:code
+bindsym $mod+8 workspace number 8 8:code
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number 1 1:emacs
+bindsym $mod+Shift+2 move container to workspace number 2 2:chromi
+bindsym $mod+Shift+3 move container to workspace number 3 3:term
+bindsym $mod+Shift+4 move container to workspace number 4 4:nau+pdf
+bindsym $mod+Shift+5 move container to workspace number 5 5:email
+bindsym $mod+Shift+6 move container to workspace number 6 6:ff
+bindsym $mod+Shift+7 move container to workspace number 7 7:code
+bindsym $mod+Shift+8 move container to workspace number 8 8:code
+
+# force a window on a named workspace
+assign [class="Emacs"] 1 1:emacs
+assign [class="Chromium"] 2 2:chromi
+# assign [class="Tilix"] 3 3:term
+assign [class="Nautilus"] 4  4:nau+pdf
+assign [class="Evince"] 4  4:nau+pdf
+assign [class="Thunderbird"] 5 5:email
+assign [class="Firefox"] 6 6:ff
+
+
+# finally, exec redshift somewhere in China
+exec --no-startup-id redshift -l 48.520520:54.921676
