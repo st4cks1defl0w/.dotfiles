@@ -11,8 +11,8 @@
 (doom! :input
        ;;chinese
        ;;japanese
-       :themes
-       doom-themes
+       ;; :themes
+       ;; doom-themes
        :completion
        company           ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
@@ -147,7 +147,7 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
+       web               ; the tubes
        ;;vala              ; GObjective-C
 
        :email
@@ -184,6 +184,7 @@
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook 'global-flycheck-mode)
 (add-hook 'prog-mode-hook (lambda () (turn-on-fci-mode)))
+(add-hook 'term-mode-hook #'eterm-256color-mode)
 (projectile-global-mode)
 (global-prettify-symbols-mode +1)
 (set-default-font "Menlo 14")
@@ -194,7 +195,32 @@
 ;; (doom-themes-visual-bell-config)
 (doom-themes-treemacs-config)
 (doom-themes-org-config)
-(toggle-frame-fullscreen)
+;; (toggle-frame-fullscreen)
+;;start tide aka typescript mode
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1))
+(setq company-tooltip-align-annotations t)
+(add-hook 'before-save-hook 'tide-format-before-save)
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+         (lambda ()
+           (when (string-equal "tsx" (file-name-extension buffer-file-name))
+             (setup-tide-mode))))
+(flycheck-add-mode 'typescript-tslint 'web-mode)
+;;end tide
+;;start resolve timemachine-evil conflict
+(eval-after-load 'git-timemachine
+  '(progn
+     (evil-make-overriding-map git-timemachine-mode-map 'normal)
+     ;; force update evil keymaps after git-timemachine-mode loaded
+     (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)))
+;;end resolve timemachine-evil conflict
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

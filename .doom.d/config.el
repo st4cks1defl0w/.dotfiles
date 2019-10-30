@@ -11,9 +11,5 @@
 (setq-default fill-column 90)
 (setq company-idle-delay 0.2 company-minimum-prefix-length 2)
 (setq-default magit-status-buffer-switch-function 'switch-to-buffer)
-
-(map! :leader
-      (:desc "file" :prefix "f"
-        (:when (featurep! :ui treemacs)
-          :desc "Browse file tree"          :n  "t" #'treemacs)
-        :desc "Delete this file"            :n "X" #'doom/delete-this-file))
+(setq org-agenda-files '("~/org"))
+(map! :n "SPC *" #'+default/search-project-for-symbol-at-point)

@@ -11,3 +11,6 @@
 (package! bind-key)
 (package! fill-column-indicator)
 (package! auto-complete)
+(package! tide)
+;;(package! writegood-mode)
+;;(package! writeroom-mode)
