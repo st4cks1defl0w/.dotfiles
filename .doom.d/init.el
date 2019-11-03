@@ -177,24 +177,24 @@
        ;; config. Use it as a reference for your own modules.
        (default +bindings +smartparens))
 
-(require 'flycheck-joker)
-(ac-config-default)
+;;(require 'flycheck-joker)
+;;(ac-config-default)
 (add-hook 'prog-mode-hook 'evil-cleverparens-mode)
 (add-hook 'prog-mode-hook 'rainbow-mode)
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook 'global-flycheck-mode)
 (add-hook 'prog-mode-hook (lambda () (turn-on-fci-mode)))
 (add-hook 'term-mode-hook #'eterm-256color-mode)
-(projectile-global-mode)
+;;(projectile-global-mode)
 (global-prettify-symbols-mode +1)
-(set-default-font "Menlo 14")
+;;(set-default-font "Menlo 14")
 ;;HACK chilltheme
-(load-theme 'zenburn t)
+;;(load-theme 'zenburn t)
 ;;HACK daytheme
 ;; (load-theme 'doom-nord t)
 ;; (doom-themes-visual-bell-config)
-(doom-themes-treemacs-config)
-(doom-themes-org-config)
+;;(doom-themes-treemacs-config)
+;;(doom-themes-org-config)
 ;; (toggle-frame-fullscreen)
 ;;start tide aka typescript mode
 (defun setup-tide-mode ()
@@ -206,13 +206,13 @@
 (setq company-tooltip-align-annotations t)
 (add-hook 'before-save-hook 'tide-format-before-save)
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
-(require 'web-mode)
+;;(require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
 (add-hook 'web-mode-hook
          (lambda ()
            (when (string-equal "tsx" (file-name-extension buffer-file-name))
              (setup-tide-mode))))
-(flycheck-add-mode 'typescript-tslint 'web-mode)
+;;(flycheck-add-mode 'typescript-tslint 'web-mode)
 ;;end tide
 ;;start resolve timemachine-evil conflict
 (eval-after-load 'git-timemachine
