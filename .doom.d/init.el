@@ -177,6 +177,7 @@
        ;; config. Use it as a reference for your own modules.
        (default +bindings +smartparens))
 
+;;remember to 1) package-install 2) install joker binary
 ;;(require 'flycheck-joker)
 ;;(ac-config-default)
 (add-hook 'prog-mode-hook 'evil-cleverparens-mode)
